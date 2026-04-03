@@ -1,0 +1,184 @@
+[
+    {
+        "block": {
+            "type": "place_terminate_gpio",
+            "message0": "放置终端元件 %1 , 标识 %2",
+            "args0": [
+                {
+                    "type": "field_dropdown",
+                    "name": "opt",
+                    "options": [
+                        ["继电器", "T@OUT_RELAY"],
+                        ["风扇", "T@OUT_FAN"],
+                        ["LED", "T@OUT_LED"],
+                        ["电磁阀", "T@OUT_SOL"],
+                        ["蜂鸣器", "T@OUT_BZ"],
+                        ["IO型传感器", "T@IN_SENSOR"],
+                        ["开关", "T@IN_SWITCH"],
+                        ["步进电机", "T@STEPPER"]
+                    ]
+                },
+                {
+                    "type": "field_input",
+                    "name": "label",
+                    "text": "default"
+                }
+            ],
+            "previousStatement": null,
+            "nextStatement": null,
+            "colour": 230,
+            "tooltip": "tip_place_component",
+            "helpUrl": "help_place_component"
+        },
+        "generator": [
+            "var code = '...';",
+            "return code;"
+        ]
+    },
+    {
+        "block": {
+            "type": "place_terminate_pin",
+            "message0": "放置终端PIN %1 , 标识 %2",
+            "args0": [
+                {
+                    "type": "field_dropdown",
+                    "name": "opt",
+                    "options": [
+                        ["电压测试点", "T@SOURCE_DCV"],
+                        ["CMOS OUTPUT OPEN-DRAIN", "T@CMOS_OD"],
+                        ["CMOS OUTPUT PUSH-PULL", "T@CMOS_PP"],
+                        ["CMOS INPUT LEVEL", "T@CMOS_INPUT_LVL"],
+                        ["CMOS INPUT FALLING", "T@CMOS_INPUT_FALLING"],
+                        ["CMOS INPUT RISING", "T@CMOS_INPUT_RISING"]
+                    ]
+                },
+                {
+                    "type": "field_input",
+                    "name": "label",
+                    "text": "default"
+                }
+            ],
+            "previousStatement": null,
+            "nextStatement": null,
+            "colour": 230,
+            "tooltip": "tip_place_component",
+            "helpUrl": "help_place_component"
+        },
+        "generator": [
+            "var code = 'do place_terminate_gpio';",
+            "return code;"
+        ]
+    },
+    {
+        "block": {
+            "type": "place_terminate_uart",
+            "message0": "放置终端UART, 标识 %1 %2 %3 Baudrate: %4 , DATA bits: %5 , STOP bits: %6 %7 %8 Pority: %9 , CTS %10 , RTS %11",
+            "args0": [
+                {
+                "type": "field_input",
+                "name": "PORT",
+                "text": "DUT-COMM"
+                },
+                {
+                "type": "input_dummy"
+                },
+                {
+                "type": "input_end_row"
+                },
+                {
+                "type": "field_number",
+                "name": "bard",
+                "value": 115200,
+                "precision": 1
+                },
+                {
+                "type": "field_dropdown",
+                "name": "data_bits",
+                "options": [
+                    [
+                    "8",
+                    "DATA8"
+                    ],
+                    [
+                    "7",
+                    "DATA7"
+                    ],
+                    [
+                    "6",
+                    "DATA6"
+                    ]
+                ]
+                },
+                {
+                "type": "field_dropdown",
+                "name": "data_bits",
+                "options": [
+                    [
+                    "1",
+                    "STOP1"
+                    ],
+                    [
+                    "1.5",
+                    "STOP1_5"
+                    ],
+                    [
+                    "2",
+                    "STOP2"
+                    ]
+                ]
+                },
+                {
+                "type": "input_dummy"
+                },
+                {
+                "type": "input_end_row"
+                },
+                {
+                "type": "field_dropdown",
+                "name": "pority",
+                "options": [
+                    [
+                    "NONE",
+                    "NONE"
+                    ],
+                    [
+                    "EVEN",
+                    "EVEN"
+                    ],
+                    [
+                    "ODD",
+                    "ODD"
+                    ]
+                ]
+                },
+                {
+                "type": "field_checkbox",
+                "name": "cts",
+                "checked": false
+                },
+                {
+                "type": "field_checkbox",
+                "name": "rts",
+                "checked": false
+                }
+            ],
+            "previousStatement": null,
+            "nextStatement": null,
+            "colour": 230,
+            "tooltip": "",
+            "helpUrl": ""
+        },
+        "generator": [
+            "var text_port = block.getFieldValue('PORT');",
+            "var number_bard = block.getFieldValue('bard');",
+            "var dropdown_data_bits = block.getFieldValue('data_bits');",
+            "var dropdown_data_bits = block.getFieldValue('data_bits');",
+            "var dropdown_pority = block.getFieldValue('pority');",
+            "var checkbox_cts = block.getFieldValue('cts') === 'TRUE';",
+            "var checkbox_rts = block.getFieldValue('rts') === 'TRUE';",
+            "var code = text_port + dropdown_data_bits + 'do place_terminate_uart';",
+            "return code;"
+        ]
+    }
+]
+  

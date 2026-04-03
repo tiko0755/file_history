@@ -1,0 +1,30 @@
+{
+    "solution_name": "undefined-02",
+    "user": {
+        "tiko": {
+            "role": "Developer",
+            "salt": "276ea00ebc9df2d9361e1f079dcbfce3",
+            "passwordHash": "c453cea101b2ca0a6b478c55f932e3607f07ad4375c46589aed613e5518eefa58caadfdd1c663c36309e11c1cf11d5835c0e14ed553723062643d97918f39391"
+        },
+        "jim": {
+            "role": "Engineer",
+            "salt": "c676cc95efce315e479bcb6f738414c0",
+            "passwordHash": "a1c6d1f7dcaa505ce38ea7cdbca875c7f122825bfffcc0eab26135b92a7ea6f5232e09929cf2bf084e65a2fef3c00f25cf8b4e6015b47b344e0215edc6986141"
+        },
+        "lilei": {
+            "role": "Operator",
+            "salt": "1c3d2fc39af7da75a63e82848c71aae1",
+            "passwordHash": "738a112e52eccbb3f8fd33fca50c92cebf30d1600bb1252b313fd2d3bbbfad24c1709b5e0739f9968e8eb1e5be6691f0e8e9d05d7cb428ec782d3fc26cd243a4"
+        },
+        "lily": {
+            "role": "Visitor",
+            "salt": "8237655d96ae19402b5910644b9e5621",
+            "passwordHash": "f307fb6a7fed5bc3d0c9728bcd8e93937f504d38160d31e16379aa8a518144895a6d2976162aa3fbc48be1cee11b8eb202fb67474e15e28c848792929072d876"
+        },
+        "lucy": {
+            "role": "Visitor",
+            "salt": "102df338f1dbc90ff2ebaee4e6910a6f",
+            "passwordHash": "04b01d3a3f008b4fc2a5d070bb1df25de2142052e7bf86be6f7ca245f051431d83ad29be933f7ffa8c8ad6c3829a0334791f59e08c1385ed77e73062b355ca9a"
+        }
+    }
+}

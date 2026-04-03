@@ -1,0 +1,219 @@
+{
+    "label": "File Editor",
+    "content": {
+        "toolbox": {
+            "kind": "flyoutToolbox",
+            "contents": [
+                {
+                    "kind": "label",
+                    "text": "File Editor"
+                },
+                {
+                    "kind": "sep",
+                    "gap": 5
+                },
+                {
+                    "kind": "button",
+                    "text": "Save",
+                    "callbackKey": "onClickSaveSolution",
+                    "css":""
+                },
+                {
+                    "kind": "sep",
+                    "gap": 5
+                },
+                {
+                    "kind": "button",
+                    "text": "Save As",
+                    "callbackKey": "onClickSaveAsSolution",
+                    "css":""
+                },
+                {
+                    "kind": "sep",
+                    "gap": 5
+                },
+                {
+                    "kind": "button",
+                    "text": "Delete",
+                    "callbackKey": "onClickDeleteSolution",
+                    "css":""
+                }
+            ]
+        },
+        "workspace": "",
+        "code": ""
+    },
+    "children": [
+        {
+            "label": "DUT Template",
+            "content": {
+                "toolbox": {
+                    "kind": "flyoutToolbox",
+                    "contents": [
+                        {
+                            "kind": "label",
+                            "text": "DUT Template"
+                        },
+                        {
+                            "kind": "sep",
+                            "gap": 5
+                        },
+                        {
+                            "kind": "button",
+                            "text": "保存",
+                            "callbackKey": "onClickSaveSolution",
+                            "css":""
+                        },
+                        {
+                            "kind": "sep",
+                            "gap": 5
+                        },
+                        {
+                            "kind": "block",
+                            "type": "controls_if",
+                            "custom": false
+                        },
+                        {
+                            "kind": "sep",
+                            "gap": 5
+                        },
+                        {
+                            "kind": "block",
+                            "type": "controls_whileUntil",
+                            "custom": false
+                            
+                        },
+                        {
+                            "kind": "sep",
+                            "gap": 5
+                        },
+                        {
+                            "kind": "sep",
+                            "gap": 5
+                        }
+                    ]
+                },
+                "workspace": "",
+                "code": ""
+            }
+        },
+        {
+            "label": "Components",
+            "content": {
+            "toolbox": {
+                "kind": "flyoutToolbox",
+                "contents": [
+                    {
+                        "kind": "label",
+                        "text": "Components"
+                    },
+                    {
+                        "kind": "sep",
+                        "gap": 5
+                    },
+                    {
+                        "kind": "block",
+                        "type": "place_component",
+                        "custom": true
+                    },
+                    {
+                        "kind": "sep",
+                        "gap": 5
+                    },
+                    {
+                        "kind": "block",
+                        "type": "place_communication_uart",
+                        "custom": true
+                    },
+                    {
+                        "kind": "sep",
+                        "gap": 5
+                    },
+                    {
+                        "kind": "sep",
+                        "gap": 5
+                    }
+                ]
+            },
+            "workspace": {},
+            "code": ""
+            }
+        },
+        {
+            "label": "Connections",
+            "content": {
+            "toolbox": {
+                "kind": "flyoutToolbox",
+                "contents": [
+                    {
+                        "kind": "label",
+                        "text": "Connections"
+                    },
+                    {
+                        "kind": "sep",
+                        "gap": 5
+                    },
+                    {
+                        "kind": "block",
+                        "type": "place_component",
+                        "custom": true
+                    },
+                    {
+                        "kind": "sep",
+                        "gap": 5
+                    },
+                    {
+                        "kind": "block",
+                        "type": "place_communication_uart",
+                        "custom": true
+                    },
+                    {
+                        "kind": "sep",
+                        "gap": 5
+                    },
+                    {
+                        "kind": "sep",
+                        "gap": 5
+                    }
+                ]
+            },
+            "workspace": {},
+            "code": ""
+            }
+        },
+        {
+            "label": "Test Plans",
+            "content": {
+                "toolbox": {},
+                "workspace": "",
+                "code": ""
+            },
+            "children": [
+                {
+                    "label": "Procure 1",
+                    "content": {
+                        "toolbox": {},
+                        "workspace": "",
+                        "code": ""
+                    }
+                },
+                {
+                    "label": "Procure 2",
+                    "content": {
+                        "toolbox": {},
+                        "workspace": "",
+                        "code": ""
+                    }
+                },
+                {
+                    "label": "Procure 3",
+                    "content": {
+                        "toolbox": {},
+                        "workspace": "",
+                        "code": ""
+                    }
+                }
+            ]
+        }
+    ]
+}
