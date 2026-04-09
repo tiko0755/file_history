@@ -3,7 +3,6 @@ import fs from 'fs';
 import express from 'express';
 import bodyParser from 'body-parser';
 import { createServer } from 'http';
-import { Server } from 'socket.io';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -18,30 +17,9 @@ import {
   authenticateUser
 } from './auth/index.js';  // 注意：需要包含文件扩展名
 
-import {
-  startBusiness,
-  startTest,
-} from './business/index.js';  // 注意：需要包含文件扩展名
-
-import {    
-  row_updateHeader_text,     // 设置测试行的标题的内容, Description, Lower, Upper, Unit
-  row_updateHeader_style,    // 设置测试行的标题的样式, Description, Lower, Upper, Unit
-  row_updateSlotCell,        // 设置测试行的某个槽位的内容和样式
-  row_defaultSlot,          // 以默认的方式，依次更新指定slot的内容和样式为初始状态
-  row_defaultAllSlot,          // 以默认的方式，依次更新指定slot的内容和样式为初始状态
-} from './business/ui_controls.js';  // 注意：需要包含文件扩展名
-
-import { fetch_all_solutions } from './api/solution_file.js';  // 
-
-
-// import {
-//   DBF10_t,
-// } from '/home/workspace//program/db_f10/index.js';  // 注意：需要包含文件扩展名
-
-//const dbF10Helper = new DBF10_t("D:/istock/data/f10.db", logger);
-
 import { router as birds } from './router/birds.js';  // 注意：需要包含文件扩展名
 import { router as companysurvey } from './router/companysurvey.js';  // 注意：需要包含文件扩展名
+import { createSolutionsRouter } from './router/solutions.js';  // 注意：需要包含文件扩展名
 
 const app = express();
 
@@ -56,6 +34,11 @@ app.use(express.urlencoded({ extended: true })); // 解析 application/x-www-for
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use(express.static(path.join(__dirname, 'dist/media')));
 app.use(express.static(path.join(__dirname, 'public')));
+
+const config = JSON.parse(fs.readFileSync("./config.json"));
+
+const solutionsRouter = createSolutionsRouter(path.join(config.solution_root, "repo"));
+app.use('/solutions', solutionsRouter);
 
 app.get('/about', function (req, res) {
   res.json({ ver: 'ver1.0.0' })
@@ -138,12 +121,10 @@ app.use((req, res, next) => {
 });
 
 const httpServer = createServer(app);
-const io = new Server(httpServer, { /* options */ });
 
 // 启动服务器
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 httpServer.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    startBusiness(io);
 });
 
