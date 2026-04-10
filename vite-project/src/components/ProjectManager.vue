@@ -36,7 +36,6 @@
 
 <script lang="ts" setup>
 import { onMounted, onUnmounted, ref, watch, nextTick, computed, callWithAsyncErrorHandling } from "vue";
-import BlocklyEditor from "@/components/BlocklyEditor.vue";
 
 import type {
   FilterNodeMethodFunction,

@@ -1,7 +1,7 @@
 // getDirectories.js
 import { readdir, readFile, access } from 'node:fs/promises';
 import { join, extname } from 'node:path';
-
+import crypto from 'crypto';
 /**
  * 异步获取指定路径下的所有子目录名称
  * @param {string} dirPath - 要读取的目录路径
@@ -51,7 +51,7 @@ async function getGitRepositories(dirPath) {
  * 读取指定文件夹下特定文件类型的所有文件内容
  * @param {string} folderPath - 文件夹路径
  * @param {string|string[]} extensions - 文件扩展名（如 '.txt' 或 ['.js', '.json']）
- * @returns {Promise<Array<{filePath: string, content: string}>>}
+ * @returns {Promise<Array<{filePath: string, hash: string, content: string}>>}
  */
 async function readFilesByType(folderPath, extensions) {
     // 统一转为数组处理
@@ -75,7 +75,8 @@ async function readFilesByType(folderPath, extensions) {
             targetFiles.map(async (file) => {
                 const filePath = join(folderPath, file);
                 const content = await readFile(filePath, 'utf-8');
-                return { filePath, content };
+                const hash = crypto.createHash('md5').update(content).digest('hex');
+                return { filePath, content, hash };
             })
         );
         

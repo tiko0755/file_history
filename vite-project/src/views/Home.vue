@@ -10,7 +10,6 @@
             <el-dropdown-menu>
               <el-dropdown-item @click="onClickDownload">下载</el-dropdown-item>
               <el-dropdown-item @click="onClickRun">运行</el-dropdown-item>
-              <el-dropdown-item @click="onClickEdit">编辑</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -34,36 +33,25 @@
 <script setup lang="ts">
 console.log('run Home.vue');
 
-import { onMounted, ref, reactive, computed } from "vue";
-import { Menu as IconMenu, Message, Setting } from "@element-plus/icons-vue";
+import { onMounted, ref, computed } from "vue";
+import { Setting } from "@element-plus/icons-vue";
 import ProjectManager from "@/components/ProjectManager.vue";
 import TestPage from "@/components/TestPage.vue";
-import { useSocketStore } from "@/stores/socket.store";
 import { useSolutionStore } from "@/stores/solution.store";
-
-const socketStore = useSocketStore();
-const { sendMessage, reqAllSolutions } = socketStore;
 
 const solutionStore = useSolutionStore();
 
 // 组件配置映射
 const componentsMap = {
   TestPage: {
-    component: TestPage,
+    component: TestPage, // 使用类型断言，告诉 TypeScript 这是一个组件
     props: {
       title: "TestPage",
       tree: []
     }
   },
-  ProjectEditor: {
-    component: ProjectManager,
-    props: {
-      title: "ProjectEditor",
-      tree: []
-    }
-  },
   ProjectManager: {
-    component: ProjectManager,
+    component: ProjectManager, // 使用类型断言，告诉 TypeScript 这是一个组件
     props: {
       title: "ProjectManager",
       tree: []
@@ -72,7 +60,7 @@ const componentsMap = {
 };
 
 // 定义所有可能的 tab 名称类型
-type TabName = 'TestPage' | 'ProjectEditor' | 'ProjectManager'
+type TabName = 'TestPage' | 'ProjectManager'
 // 使用类型断言或定义 ref 的类型
 const currentTabName = ref<TabName>('TestPage')
 const propsID = ref(0);
@@ -87,11 +75,6 @@ const onClickRun = () => {
   propsID.value++;
   console.log('onClickRun');
   currentTabName.value = "TestPage";
-};
-const onClickEdit = () => {
-  propsID.value++;
-  console.log('onClickEdit');
-  currentTabName.value = "ProjectEditor";
 };
 
 // 计算属性返回当前组件
@@ -112,11 +95,6 @@ solutionStore.downloadAllSolutions()
   componentsMap["ProjectManager"].props.tree = solutionStore.solutions;
   important_label.value = solutionStore.currentSolutionName;
   console.log(`currentSolutionName: ${solutionStore.currentSolutionName}`);
-  for(let solution of solutionStore.solutions){
-    if(solution.label === solutionStore.currentSolutionName){
-      componentsMap["ProjectEditor"].props.tree = solution.children;
-    }
-  }
   //console.log('downloadAllSolutions.componentsMap:', componentsMap)
   //console.log('downloadAllSolutions.currentTabName:', currentTabName.value)
 })
