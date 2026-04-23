@@ -1,8 +1,10 @@
 import { simpleGit } from 'simple-git';
 import { readFilesByType } from './fs_utils.js'; 
+import path from 'node:path';
 
 // "/home/workspace/solution_manager/repo/undefined-01"
-const repoTop = async (repoDir, types = [".json"]) => {
+const repoTop = async (root, repo, types = [".json"]) => {
+    const repoDir = path.join(root, repo)
     const options = {
         baseDir: repoDir,
         binary: 'git',
@@ -11,8 +13,7 @@ const repoTop = async (repoDir, types = [".json"]) => {
     const git = simpleGit(options);
 
     const top = {
-        baseDir: options.baseDir,
-        content:[]
+        baseDir: repo,
     };
 
     // 获取仓库状态
@@ -31,11 +32,12 @@ const repoTop = async (repoDir, types = [".json"]) => {
 
     const typesX = types.map(type => type.startsWith('.') ? type : '.' + type);
 
-    top.files = await readFilesByType(repoDir, typesX).catch(err => {
+    // 提取所有文件列表的概要信息
+    top.files = await readFilesByType(root, repo, typesX).catch(err => {
         console.error('读取文件失败:', err);
         return [];
     });
-
+    
     return top;
 }
 
