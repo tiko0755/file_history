@@ -52,16 +52,16 @@ export const createSolutionsRouter = (solution_root) => {
   })
 
   // 获取当前所有的解决方案的内容
-  router.post('/addchanges', async (req, res, next) => {
+  router.get('/addchanges', async (req, res, next) => {
     console.dir(req.query);
     console.dir(req.body);
-    
+    const gitRepo = req.query.repo;
     try {
       // 假设 req.body 是一个数组
       const files = Array.isArray(req.body) ? req.body : [req.body];
       for (let file of files) {
-        console.log('Saving file:', file.filePath);
-        await updateFile(solution_root, req.query.name, file.filePath, file.content);
+        console.log('Saving file:', file.name);
+        await updateFile(solution_root, gitRepo, file.name, file.content);
         res.status(200).json({ success: true });
       }
     } catch (error) {

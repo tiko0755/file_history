@@ -1,5 +1,5 @@
 // getDirectories.js
-import { readdir, readFile, access, stat } from 'node:fs/promises';
+import { readdir, readFile, writeFile, access, stat, mkdir } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import crypto from 'crypto';
 import path from 'node:path';
@@ -112,15 +112,22 @@ async function updateFile(root, repo, filePath, content) {
   const fn = path.join(root, repo, filePath);
   console.log('readFilesByType.folderPath:', fn);
   try {
-    await fs.writeFile(fn, content, 'utf-8');
+    // 确保目录存在,如果不存在则返回异常
+    const stats = await stat(fn);
+    if (stats.isDirectory()) {
+      throw new Error(`Cannot write to directory: ${fn}`);
+    }
+    // 如果 content 是对象且文件扩展名是 .json，则格式化为 JSON 字符串
+    if (typeof content === 'object' && path.extname(fn) === '.json') {
+      content = JSON.stringify(content, null, 2);
+    }
+    await writeFile(fn, content, 'utf-8');
     console.log('Successfully saved:', fn);
   } catch (error) {
     console.error('读取文件失败:', error);
     throw error;
   }
 }
-
-
 
 export { getDirectories, getGitRepositories, readFilesByType, updateFile };
 
