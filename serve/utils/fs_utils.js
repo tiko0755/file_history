@@ -92,7 +92,7 @@ async function readFilesByType(root, repo, extensions) {
         }
         
         return { 
-          filePath: filePath.replace(root + path.sep, ''), // 相对于 root 的路径
+          filePath: filePath.replace(root + path.sep, '').replace(repo + path.sep, ''), // 相对于 root 的路径
           content, 
           hash,
           size: buffer.length,
@@ -108,25 +108,47 @@ async function readFilesByType(root, repo, extensions) {
   }
 }
 
+/**
+ * 更新或创建文件
+ * @param {string} root - 根目录
+ * @param {string} repo - 仓库名称
+ * @param {string} filePath - 文件路径（相对于 repo）
+ * @param {string|object} content - 文件内容
+ */
 async function updateFile(root, repo, filePath, content) {
+  // 拼接完整文件路径
   const fn = path.join(root, repo, filePath);
-  console.log('readFilesByType.folderPath:', fn);
+  console.log('updateFile.fn:', fn);
+  
+  // 确保父目录存在，不存在则创建
+  const dir = path.dirname(fn);
+  await access(dir).catch(async () => {
+    await mkdir(dir, { recursive: true });
+  });
+  
+  // 检查文件是否存在
   try {
-    // 确保目录存在,如果不存在则返回异常
     const stats = await stat(fn);
+    // 如果是文件夹，抛出异常
     if (stats.isDirectory()) {
       throw new Error(`Cannot write to directory: ${fn}`);
     }
-    // 如果 content 是对象且文件扩展名是 .json，则格式化为 JSON 字符串
-    if (typeof content === 'object' && path.extname(fn) === '.json') {
-      content = JSON.stringify(content, null, 2);
-    }
-    await writeFile(fn, content, 'utf-8');
-    console.log('Successfully saved:', fn);
   } catch (error) {
-    console.error('读取文件失败:', error);
-    throw error;
+    // 如果文件不存在（ENOENT），忽略错误，继续创建文件
+    if (error.code !== 'ENOENT') {
+      throw error;
+    }
   }
+  
+  // 如果 content 是对象且文件扩展名是 .json，则格式化为 JSON 字符串
+  console.log('typeof content:', typeof content, 'extname:', extname(fn));
+  if (typeof content === 'object' && path.extname(fn) === '.json') {
+    content = JSON.stringify(content, null, 2);
+  }
+  
+  // 写入文件
+  await writeFile(fn, content, 'utf-8');
+  console.log('Successfully saved:', fn);
 }
 
 export { getDirectories, getGitRepositories, readFilesByType, updateFile };

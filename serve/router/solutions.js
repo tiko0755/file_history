@@ -52,7 +52,7 @@ export const createSolutionsRouter = (solution_root) => {
   })
 
   // 获取当前所有的解决方案的内容
-  router.get('/addchanges', async (req, res, next) => {
+  router.post('/addchanges', async (req, res, next) => {
     console.dir(req.query);
     console.dir(req.body);
     const gitRepo = req.query.repo;
@@ -62,8 +62,8 @@ export const createSolutionsRouter = (solution_root) => {
       for (let file of files) {
         console.log('Saving file:', file.name);
         await updateFile(solution_root, gitRepo, file.name, file.content);
-        res.status(200).json({ success: true });
       }
+      res.status(200).json({ success: true });
     } catch (error) {
       console.error('Error processing request:', error);
       res.status(500).json({ success: false, error: error.message });
