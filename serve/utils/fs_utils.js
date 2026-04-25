@@ -80,19 +80,23 @@ async function readFilesByType(root, repo, extensions) {
         let content = undefined;
         let isText = false;
         try {
-          const ext = extname(file);
+          let ext = extname(file).trim();
           if(normalizedExts.includes(ext)){
+            // 简单检查是否为有效文本（可根据需要调整）
+            isText = true; 
             // 尝试解码为 UTF-8 文本
             content = buffer.toString('utf-8');
-            // 简单检查是否为有效文本（可根据需要调整）
-            isText = !content.includes('\uFFFD'); // 没有替换字符
+            //console.log('content:', content);
+            if(ext.toLowerCase().indexOf(".json") >= 0){
+              content = JSON.parse(content);
+            }
           }
         } catch (e) {
           content = undefined;  //buffer.toString('base64'); // 降级为 base64
         }
         
         return { 
-          filePath: filePath.replace(root + path.sep, '').replace(repo + path.sep, ''), // 相对于 root 的路径
+          name: filePath.replace(root + path.sep, '').replace(repo + path.sep, ''), // 相对于 root 的路径
           content, 
           hash,
           size: buffer.length,

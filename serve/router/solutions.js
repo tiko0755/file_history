@@ -46,13 +46,14 @@ export const createSolutionsRouter = (solution_root) => {
         repoInfos.forEach(repo => {
           //console.log('repo:', repo);
           repo.files.forEach(item => {
-              if(item.filePath.endsWith('.json')){
-                item.content = JSON.parse(item.content);
-              }
+            //console.log('repoInfo.item:', item)
+            if(item.name.endsWith('.json')){
+              item.content = typeof item.content === "object" ? item.content : JSON.parse(item.content);
+            }
           })
         })
       }catch(err){
-        console.error('解析 solution.json 失败:', err);
+        console.error('catch error:', err);
       }
       res.status(200).json(repoInfos);
     } catch (error) {
