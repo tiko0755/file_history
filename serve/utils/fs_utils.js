@@ -51,7 +51,7 @@ async function getGitRepositories(dirPath) {
 
 async function readFilesByType(root, repo, extensions) {
   const folderPath = path.join(root, repo);
-  console.log('readFilesByType.folderPath:', folderPath);
+  //console.log('readFilesByType.folderPath:', folderPath);
   const extList = Array.isArray(extensions) ? extensions : [extensions];
   const normalizedExts = extList.map(ext => ext.startsWith('.') ? ext : `.${ext}`);
   //console.log('normalizedExts:', normalizedExts);

@@ -32,11 +32,6 @@ const fetch_all_solutions = async (dirPath) => {
     }
 }
 
-// (async () => {
-//     const solutions = await fetch_all_solutions("../public/solutions");
-//     console.dir(solutions);
-// })();
-
 export {    
   fetch_all_solutions,    // read all the solutions
 }

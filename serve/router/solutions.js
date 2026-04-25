@@ -1,8 +1,17 @@
 import express from 'express';
 import fs from 'node:fs/promises';
-import path from 'node:path';
+import path, { format } from 'node:path';
 import { getGitRepositories, updateFile } from '../utils/fs_utils.js';  // 注意：需要包含文件扩展名
-import { repoTop } from '../utils/git_utils.js';  // 注意：需要包含文件扩展名
+import { 
+  repoTop, 
+  commit, 
+  status, 
+  switchToExistingBranch, 
+  createAndSwitchBranch, 
+  branch, 
+  mergeBranches,
+  currentBranch
+} from '../utils/git_utils.js';  // 注意：需要包含文件扩展名
 
 export const createSolutionsRouter = (solution_root) => {
   const router = express.Router()
@@ -69,6 +78,239 @@ export const createSolutionsRouter = (solution_root) => {
       res.status(500).json({ success: false, error: error.message });
     }
   });
+
+  router.post('/commit', async (req, res, next) => {
+      try {
+          // 日志记录
+          console.log('Query params:', req.query);
+          console.log('Body:', req.body);
+          console.log('Body type:', typeof req.body);
+          
+          const { repo } = req.query;
+          
+          if (!repo) {
+              return res.status(400).json({ error: 'Missing repo parameter' });
+          }
+          
+          // 解析请求体
+          let bodyObj = req.body;
+          
+          // 如果 body 是字符串，尝试解析为 JSON
+          if (typeof req.body === 'string') {
+              try {
+                  bodyObj = JSON.parse(req.body);
+              } catch (err) {
+                  return res.status(400).json({ 
+                      error: 'Invalid JSON format',
+                      message: err.message 
+                  });
+              }
+          }
+          
+          // 安全地获取参数（修复运算符问题）
+          const files = bodyObj?.files ?? ".";
+          const message = bodyObj?.message ?? "这家伙很懒";
+          
+          // 调用 commit 函数
+          const status = await commit(solution_root, repo, files, message);
+          
+          // 返回成功响应
+          res.status(200).json({
+              success: true,
+              data: status,
+              commit: {
+                  files,
+                  message,
+                  repo
+              }
+          });
+          
+      } catch (error) {
+          console.error('Commit endpoint error:', error);
+          res.status(500).json({
+              success: false,
+              error: 'Failed to commit changes',
+              message: error.message
+          });
+          next(error);
+      }
+  });
+
+  router.get('/status', async (req, res, next) => {
+      try {
+          // 日志记录
+          console.log('Query params:', req.query);
+          const { repo } = req.query;
+          if (!repo) {
+              return res.status(400).json({ error: 'Missing repo parameter' });
+          }
+          // 调用 status 函数
+          const status = await gitStatus(solution_root, repo);
+          
+          // 返回成功响应
+          res.status(200).json({
+              success: true,
+              data: status,
+          });
+          
+      } catch (error) {
+          console.error('Commit endpoint error:', error);
+          res.status(500).json({
+              success: false,
+              error: 'Failed to commit changes',
+              message: error.message
+          });
+          next(error);
+      }
+  });
+
+  router.get('/switchbranch', async (req, res, next) => {
+    try {
+        // 日志记录
+        console.log('Query params:', req.query);
+        const { repo, branch } = req.query;
+        if (!repo) {
+            return res.status(400).json({ error: 'Missing repo parameter' });
+        }
+        // 调用 status 函数
+        const status = await switchToExistingBranch(solution_root, repo, branch);
+        
+        // 返回成功响应
+        res.status(200).json({
+            success: true,
+            data: status,
+        });
+        
+    } catch (error) {
+        console.error('Commit endpoint error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to commit changes',
+            message: error.message
+        });
+        next(error);
+    }
+  });
+
+  router.get('/createandswitchbranch', async (req, res, next) => {
+    try {
+        // 日志记录
+        console.log('Query params:', req.query);
+        const { repo, branch } = req.query;
+        if (!repo) {
+            return res.status(400).json({ error: 'Missing repo parameter' });
+        }
+        // 调用 status 函数
+        const status = await createAndSwitchBranch(solution_root, repo, branch);
+        
+        // 返回成功响应
+        res.status(200).json({
+            success: true,
+            data: status,
+        });
+        
+    } catch (error) {
+        console.error('Commit endpoint error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to commit changes',
+            message: error.message
+        });
+        next(error);
+    }
+  });
+
+  router.get('/branch', async (req, res, next) => {
+    try {
+        // 日志记录
+        console.log('Query params:', req.query);
+        const { repo } = req.query;
+        if (!repo) {
+            return res.status(400).json({ error: 'Missing repo parameter' });
+        }
+        // 调用 status 函数
+        const status = await currentBranch(solution_root, repo);
+        
+        // 返回成功响应
+        res.status(200).json({
+            success: true,
+            data: status,
+        });
+        
+    } catch (error) {
+        console.error('Commit endpoint error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to commit changes',
+            message: error.message
+        });
+        next(error);
+    }
+  });
+
+  router.get('/mergebranches', async (req, res, next) => {
+    try {
+        // 日志记录
+        console.log('/mergebranches, Query params:', req.query);
+        const { repo, from, to } = req.query;
+        if (!repo) {
+            return res.status(400).json({ error: 'Missing repo parameter' });
+        }
+        const status = await mergeBranches(solution_root, repo, from, to);
+        // 返回成功响应
+        res.status(200).json({
+            success: true,
+            data: status,
+        });
+    } catch (error) {
+        console.error('mergebranches endpoint error:', error);
+        res.status(500).json({
+            success: false,
+            error: `Failed to merge ${to} from ${main}`,
+            message: error.message
+        });
+        next(error);
+    }
+  });
+
+  router.get('/currentbranch', async (req, res, next) => {
+    try {
+        // 日志记录
+        console.log('Query params:', req.query);
+        const { repo } = req.query;
+        if (!repo) {
+            return res.status(400).json({ error: 'Missing repo parameter' });
+        }
+        // 调用 status 函数
+        const status = await currentBranch(solution_root, repo);
+        
+        // 返回成功响应
+        res.status(200).json({
+            success: true,
+            data: status,
+        });
+        
+    } catch (error) {
+        console.error('Commit endpoint error:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to commit changes',
+            message: error.message
+        });
+        next(error);
+    }
+  });
+
+
+
+
+
+
+
+
+
+
+
 
   // 获取当前所有的解决方案的内容
   router.post('/save', async (req, res, next) => {
