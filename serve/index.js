@@ -13,6 +13,12 @@ import {
 
 import { router as birds } from './router/birds.js';
 import { createSolutionsRouter } from './router/solutions.js';
+import { 
+  logger, 
+  morganMiddleware, 
+  requestIdMiddleware, 
+  requestLoggerMiddleware 
+} from './utils/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -26,7 +32,7 @@ try {
 }
 
 const app = express();
-
+app.use(morganMiddleware);  // 使用 morgan 中间件
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

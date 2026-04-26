@@ -18,7 +18,7 @@ export const createSolutionsRouter = (solution_root) => {
   // middleware that is specific to this router
   const timeLog = (req, res, next) => {
     console.log('Time: ', Date.now())
-    console.log('solution_root:', solution_root);
+    //console.log('solution_root:', solution_root);
     next()
   }
   router.use(timeLog)
