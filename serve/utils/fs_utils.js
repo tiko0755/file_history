@@ -1,5 +1,5 @@
 // getDirectories.js
-import { readdir, readFile, writeFile, access, stat, mkdir } from 'node:fs/promises';
+import { readdir, readFile, writeFile, access, stat, mkdir, copyFile } from 'node:fs/promises';
 import { join, extname } from 'node:path';
 import crypto from 'crypto';
 import path from 'node:path';
@@ -155,7 +155,41 @@ async function updateFile(root, repo, filePath, content) {
   console.log('Successfully saved:', fn);
 }
 
-export { getDirectories, getGitRepositories, readFilesByType, updateFile };
+async function copyFolder(src, dest) {
+    try {
+        // 确保目标文件夹存在
+        await mkdir(dest, { recursive: true });
+        
+        // 读取源文件夹内容
+        const entries = await readdir(src, { withFileTypes: true });
+        
+        // 并行处理所有条目
+        const promises = entries.map(async (entry) => {
+            const srcPath = path.join(src, entry.name);
+            const destPath = path.join(dest, entry.name);
+            
+            if (entry.isDirectory()) {
+              if (entry.name !== 'node_modules' || entry.name !== '.git'){
+                // 跳过 node_modules 和 .git 文件夹
+                return Promise.resolve();
+              }
+              // 递归复制子文件夹
+              return copyFolder(srcPath, destPath);
+            } else {
+                // 复制文件
+                return copyFile(srcPath, destPath);
+            }
+        });
+        
+        await Promise.all(promises);
+        //console.log('复制完成');
+    } catch (err) {
+        //console.error('复制失败：', err);
+        throw err;
+    }
+}
+
+export { getDirectories, getGitRepositories, readFilesByType, updateFile, copyFolder };
 
 
 // 使用示例

@@ -1,8 +1,9 @@
 import express from 'express';
 import fs from 'node:fs/promises';
 import path, { format } from 'node:path';
-import { getGitRepositories, updateFile } from '../utils/fs_utils.js';  // 注意：需要包含文件扩展名
+import { getGitRepositories, updateFile, copyFolder } from '../utils/fs_utils.js';  // 注意：需要包含文件扩展名
 import { 
+  init as initGitRepo,
   repoTop, 
   commit, 
   status, 
@@ -12,6 +13,9 @@ import {
   mergeBranches,
   currentBranch
 } from '../utils/git_utils.js';  // 注意：需要包含文件扩展名
+
+
+
 
 export const createSolutionsRouter = (solution_root) => {
   const router = express.Router()
@@ -302,12 +306,37 @@ export const createSolutionsRouter = (solution_root) => {
     }
   });
 
+  router.get('/cloneasfreshrepo', async (req, res, next) => {
+    console.log('Query params:', req.query);
+    const { repo_source, repo_fresh } = req.query;
+    if (!repo_source) {
+        return res.status(400).json({ error: 'Missing repo_source parameter' });
+    }
+    if (!repo_fresh) {
+        return res.status(400).json({ error: 'Missing repo_fresh parameter' });
+    }
+    await copyFolder(path.join(solution_root, repo_source), path.join(solution_root, repo_fresh));
+    const rslt = await initGitRepo(solution_root, repo_fresh);
+    //console.log('initGitRepo.rslt:', rslt);
+    // 返回成功响应
+    res.status(200).json({
+        success: true,
+        data: rslt,
+    });
+  });
 
 
 
 
 
 
+
+
+
+
+
+
+  
 
 
 

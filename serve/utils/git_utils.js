@@ -12,6 +12,16 @@ const createGit = (root, repo) => {
     return simpleGit(options);
 }
 
+const init = async (root, repo) => {
+    const git = createGit(root, repo);
+    await git.init();
+    await git.add('./*');
+    await git.commit('Initial commit');
+    // 获取仓库状态
+    const status = await git.status();
+    return status;
+}
+
 // "/home/workspace/solution_manager/repo/undefined-01"
 // 获取 repo/目录下所有仓库的数据
 const repoTop = async (root, repo, types = [".json"]) => {
@@ -107,6 +117,7 @@ async function currentBranch(root, repo) {
 }
 
 export { 
+  init,
   repoTop, 
   commit, 
   status, 
